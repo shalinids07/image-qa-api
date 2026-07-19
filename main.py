@@ -21,6 +21,8 @@ class Request(BaseModel):
     image_base64: str
     question: str
 
+from google.genai import types
+
 @app.post("/answer-image")
 def answer(req: Request):
 
@@ -29,12 +31,12 @@ def answer(req: Request):
     response = client.models.generate_content(
         model="gemini-2.0-flash",
         contents=[
+            types.Part.from_bytes(
+                data=image_bytes,
+                mime_type="image/png",
+            ),
             req.question,
-            {
-                "mime_type": "image/png",
-                "data": image_bytes
-            }
-        ]
+        ],
     )
 
     return {"answer": response.text.strip()}
