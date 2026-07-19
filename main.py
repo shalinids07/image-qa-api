@@ -2,8 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from google import genai
-import base64
 import os
+import base64
 
 client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
 
@@ -29,30 +29,10 @@ def answer(req: Request):
     response = client.models.generate_content(
         model="gemini-2.5-flash",
         contents=[
+            req.question,
             {
-                "role":"user",
-                "parts":[
-                    {
-                        "inline_data":{
-                            "mime_type":"image/png",
-                            "data":req.image_base64
-                        }
-                    },
-                    {
-                        "text":f"""
-Answer ONLY the value.
-
-Question:
-{req.question}
-
-Rules:
-- Return only the answer.
-- No units.
-- No explanation.
-- Numeric answers as plain strings.
-"""
-                    }
-                ]
+                "mime_type": "image/png",
+                "data": image_bytes
             }
         ]
     )
