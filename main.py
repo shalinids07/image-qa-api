@@ -27,7 +27,7 @@ def answer(req: Request):
     image_bytes = base64.b64decode(req.image_base64)
 
     response = client.models.generate_content(
-        model="gemini-2.5-flash",
+        model="gemini-2.0-flash",
         contents=[
             req.question,
             {
